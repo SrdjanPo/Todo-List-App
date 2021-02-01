@@ -99,7 +99,7 @@ form button:hover {
     opacity: 0;
 }
 
-/* select {
+select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -128,4 +128,4 @@ select {
     right: 0;
     padding: 1rem;
     pointer-events: none;
-} */
+}
