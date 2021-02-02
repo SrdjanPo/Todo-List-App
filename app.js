@@ -39,8 +39,7 @@ function addTodo(event) {
     todoInput.value = "";
     todoInput.focus();
     todoInput.select();
-  } else {
-  }
+  } 
 }
 
 function deleteCheck(e) {
