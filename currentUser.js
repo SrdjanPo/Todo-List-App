@@ -1,8 +1,8 @@
 let mainApp = {};
 
 (function () {
-  let firebase = app_firebase;
-  let uid = null;
+  var firebase = app_firebase;
+  var uid = null;
   console.log(firebase);
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
@@ -17,5 +17,5 @@ let mainApp = {};
   function logOut() {
     firebase.auth().signOut();
   }
-  mainApp.logOut = logOut();
+  mainApp.logOut = logOut;
 })();
