@@ -6,6 +6,7 @@ let app_firebase = {};
   var firebaseConfig = {
     apiKey: "AIzaSyBQE0-3wjKXUVygBUwYmPSH7qHrxNe5lxs",
     authDomain: "todo-list-app-bd22d.firebaseapp.com",
+    databaseURL: "https://todo-list-app-bd22d-default-rtdb.firebaseio.com",
     projectId: "todo-list-app-bd22d",
     storageBucket: "todo-list-app-bd22d.appspot.com",
     messagingSenderId: "268758218907",

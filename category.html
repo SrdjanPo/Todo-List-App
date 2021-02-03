@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Category</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
@@ -14,7 +15,7 @@
       integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./category.css" />
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
 
@@ -25,31 +26,30 @@
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
 
-    <title>ToDo List</title>
+    <title>Category</title>
   </head>
   <body>
-    <header>
-      <h1>Example Todo List</h1>
-    </header>
-    <button id="logoutBtn" onclick="mainApp.logOut()">Log out</button>
-    <form>
-      <input autofocus type="text" class="todo-input" />
-      <button class="todo-button" type="submit">
-        <i class="fas fa-plus-square"></i>
-      </button>
-      <div class="select">
-        <select name="todos" class="filter-todo">
-          <option value="all">All</option>
-          <option value="completed">Completed</option>
-          <option value="uncompleted">Uncompleted</option>
-        </select>
+    <div class="category-container">
+      <div id="category-new-box">Create new board</div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="categoryModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form>
+          <input
+            type="text"
+            class="modal-input"
+            placeholder="Add board title"
+          />
+          <button id="newCategoryModalBtn">Create Board</button>
+        </form>
       </div>
-    </form>
-    <div class="todo-container">
-      <ul class="todo-list"></ul>
     </div>
     <script src="./firebase.js"></script>
     <script src="./currentUser.js"></script>
-    <script src="./app.js"></script>
+    <script src="./category.js"></script>
   </body>
 </html>

@@ -27,20 +27,46 @@ form input,
 form button {
   padding: 0.5rem;
   font-size: 2rem;
-  border: null;
+  border: 0;
   background: white;
+}
+
+textarea:focus,
+input:focus,
+input[type]:focus,
+.uneditable-input:focus {
+  border-color: rgba(229, 103, 23, 0.8);
+  box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset,
+    0 0 8px rgba(233, 233, 232, 0.6);
+  outline: 0 none;
 }
 
 form button {
   color: #d88771;
-  background: white;
+  background-color: #f0f0f0;
   cursor: pointer;
   transition: all 0.3sec ease;
+  border: null;
 }
 
 form button:hover {
   color: white;
   background: #d88771;
+}
+
+.enabledButton {
+  background-color: white;
+  border: 0;
+  transition: all 0.3sec ease;
+}
+.disabledButton {
+  border: 0;
+  border: 1px solid #dfdfdf;
+  background-color: #f0f0f0;
+  transition: all 0.3sec ease;
+}
+
+.disabledButton:hover {
 }
 
 .todo-container {
@@ -131,4 +157,28 @@ select {
   right: 0;
   padding: 1rem;
   pointer-events: none;
+}
+
+#logoutBtn {
+  padding: 0.5rem;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  border-style: solid;
+  cursor: pointer;
+}
+
+#logoutBtn:hover {
+  padding: 0.5rem;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  color: #d88771;
+  border-color: #d88771;
+  border-style: solid;
+  cursor: pointer;
 }

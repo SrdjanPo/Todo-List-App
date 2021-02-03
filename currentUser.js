@@ -1,8 +1,9 @@
 let mainApp = {};
+let uid = "";
 
 (function () {
-  var firebase = app_firebase;
-  var uid = null;
+  let firebase = app_firebase;
+  //let uid = null;
   console.log(firebase);
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {

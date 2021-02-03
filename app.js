@@ -39,7 +39,10 @@ function addTodo(event) {
     todoInput.value = "";
     todoInput.focus();
     todoInput.select();
-  } 
+    todoButton.disabled = true;
+    todoButton.classList.remove("enabledButton");
+    todoButton.classList.add("disabledButton");
+  }
 }
 
 function deleteCheck(e) {
@@ -89,8 +92,11 @@ function filterTodo(e) {
 function updateValue(e) {
   if (!e.target.value.length) {
     todoButton.disabled = true;
-    todoButton.style.backgroundColor = "fff000";
+    todoButton.classList.remove("enabledButton");
+    todoButton.classList.add("disabledButton");
   } else {
     todoButton.disabled = false;
+    todoButton.classList.remove("disabledButton");
+    todoButton.classList.add("enabledButton");
   }
 }
