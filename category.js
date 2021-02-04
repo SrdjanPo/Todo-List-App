@@ -5,7 +5,7 @@ const categoryContainer = document.querySelector(".category-container");
 var modal = document.getElementById("categoryModal");
 
 // Get the button that opens the modal
-var newCategoryBtn = document.getElementById("category-new-box");
+var newCategoryBtn = document.getElementsByClassName("category-new-box");
 
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
@@ -17,7 +17,7 @@ const modalInputValue = document.getElementsByClassName("modal-input")[0];
 const createBoardModalBtn = document.getElementById("newCategoryModalBtn");
 
 // When the user clicks on the button, open the modal
-newCategoryBtn.onclick = function () {
+newCategoryBtn[0].onclick = function () {
   modal.style.display = "block";
 };
 
@@ -41,7 +41,6 @@ createBoardModalBtn.onclick = function (event) {
 };
 
 function createCategory() {
-  event.preventDefault();
   const newCategory = document.createElement("div");
   newCategory.classList.add("category-box");
   if (modalInputValue.value.length > 0) {
@@ -58,3 +57,38 @@ function createCategory() {
     console.log("Input is empty");
   }
 }
+
+function createAddNewBoardBtn() {
+  const newBoard = document.createElement("div");
+  newBoard.innerHTML = "Create new board";
+  newBoard.classList.add("category-new-box");
+  newBoard.onclick = function () {
+    modal.style.display = "block";
+  };
+  categoryContainer.append(newBoard);
+}
+
+window.onload = function readCategories() {
+  //createAddNewBoardBtn();
+
+  const newCategory = document.createElement("div");
+  newCategory.classList.add("category-box");
+  let firebase = app_firebase;
+  let categoryArray = [];
+  firebase
+    .database()
+    .ref("User/" + uid)
+    .on("value", function (snapshot) {
+      snapshot.forEach(function (childNodes) {
+        childNodes.forEach(function (pushID) {
+          pushID.forEach(function (category) {
+            categoryArray.push(category.val());
+            const newCategory = document.createElement("div");
+            newCategory.classList.add("category-box");
+            newCategory.innerText = category.val();
+            categoryContainer.prepend(newCategory);
+          });
+        });
+      });
+    });
+};
