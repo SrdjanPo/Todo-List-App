@@ -41,6 +41,7 @@ createBoardModalBtn.onclick = function (event) {
 };
 
 function createCategory() {
+  event.preventDefault();
   const newCategory = document.createElement("div");
   newCategory.classList.add("category-box");
   if (modalInputValue.value.length > 0) {
