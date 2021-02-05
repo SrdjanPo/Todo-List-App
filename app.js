@@ -3,12 +3,21 @@ const todoInput = document.querySelector(".todo-input");
 const todoButton = document.querySelector(".todo-button");
 const todoList = document.querySelector(".todo-list");
 const filterOption = document.querySelector(".filter-todo");
+const headerTitle = document.querySelector("#header-title");
+//header title
+const init = function (e) {
+  let categoryFromQuery = document.location.search.replace(/^.*?\=/, "");
+  headerTitle.innerHTML = decodeURI(categoryFromQuery);
+};
 
 //Event Listeners
 todoInput.addEventListener("input", updateValue);
 todoButton.addEventListener("click", addTodo);
 todoList.addEventListener("click", deleteCheck);
 filterOption.addEventListener("change", filterTodo);
+document.addEventListener("DOMContentLoaded", function () {
+  init();
+});
 
 //Functions
 
@@ -48,7 +57,6 @@ function addTodo(event) {
 function deleteCheck(e) {
   const item = e.target;
   //DELETE TODO
-  console.log(item.classList);
   if (item.classList.contains("trash-btn")) {
     const todo = item.parentElement;
     todo.classList.add("fall");
