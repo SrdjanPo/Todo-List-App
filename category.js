@@ -1,3 +1,11 @@
+//Category Clicked
+
+let categoryClicked = "";
+
+//firebase ref
+
+const firebase = app_firebase;
+
 //Selectors
 const categoryContainer = document.querySelector(".category-container");
 
@@ -58,37 +66,42 @@ function createCategory() {
   }
 }
 
-function createAddNewBoardBtn() {
-  const newBoard = document.createElement("div");
-  newBoard.innerHTML = "Create new board";
-  newBoard.classList.add("category-new-box");
-  newBoard.onclick = function () {
-    modal.style.display = "block";
-  };
-  categoryContainer.append(newBoard);
-}
+const snapshotHandler = (snapshot) => {
+  snapshot.forEach(function (childNodes) {
+    childNodes.forEach(function (pushID) {
+      pushID.forEach(function (category) {
+        const newCategory = document.createElement("div");
+        newCategory.classList.add("category-box");
+        newCategory.innerText = category.val();
+        const deleteCategory = document.createElement("span");
+        deleteCategory.innerText = "X";
+        deleteCategory.classList.add("delete-category-btn");
+        deleteCategory.onclick = function () {
+          console.log(firebase.database().ref("User/" + uid + "/" + pushID));
+        };
+        newCategory.appendChild(deleteCategory);
+        categoryContainer.prepend(newCategory);
+        newCategory.onclick = function () {
+          categoryClicked = category.val();
+          window.location.replace(
+            "authSuccessful.html" + "?category=" + categoryClicked
+          );
+        };
+      });
+    });
+  });
+};
 
-window.onload = function readCategories() {
-  //createAddNewBoardBtn();
-
+(function () {
   const newCategory = document.createElement("div");
   newCategory.classList.add("category-box");
-  let firebase = app_firebase;
-  let categoryArray = [];
+  //let firebase = app_firebase;
   firebase
     .database()
     .ref("User/" + uid)
-    .on("value", function (snapshot) {
-      snapshot.forEach(function (childNodes) {
-        childNodes.forEach(function (pushID) {
-          pushID.forEach(function (category) {
-            categoryArray.push(category.val());
-            const newCategory = document.createElement("div");
-            newCategory.classList.add("category-box");
-            newCategory.innerText = category.val();
-            categoryContainer.prepend(newCategory);
-          });
-        });
-      });
-    });
-};
+    .once("value", snapshotHandler);
+  firebase
+    .database()
+    .ref("User/" + uid)
+    .on("child_added", snapshotHandler);
+})();
