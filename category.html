@@ -25,9 +25,15 @@
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
-
+    <script src="./firebase.js"></script>
+    <script src="./currentUser.js"></script>
     <title>Category</title>
   </head>
+  <header>
+    <h1 id="header-title">Boards</h1>
+  </header>
+  <button id="logoutBtn" onclick="mainApp.logOut()">Log out</button>
+  <button id="backBtn" onclick="goBack()">Go Back</button>
   <body>
     <div class="category-container">
       <div class="category-new-box">Create new board</div>
@@ -47,8 +53,6 @@
         </form>
       </div>
     </div>
-    <script src="./firebase.js"></script>
-    <script src="./currentUser.js"></script>
     <script src="./category.js"></script>
   </body>
 </html>

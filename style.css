@@ -162,8 +162,8 @@ select {
 #logoutBtn {
   padding: 0.5rem;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 50px;
+  right: 50px;
   background-color: transparent;
   color: white;
   border-color: white;
@@ -174,8 +174,32 @@ select {
 #logoutBtn:hover {
   padding: 0.5rem;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 50px;
+  right: 50px;
+  background-color: white;
+  color: #d88771;
+  border-color: #d88771;
+  border-style: solid;
+  cursor: pointer;
+}
+
+#backBtn {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  border-style: solid;
+  cursor: pointer;
+}
+
+#backBtn:hover {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50px;
+  right: 50px;
   background-color: white;
   color: #d88771;
   border-color: #d88771;

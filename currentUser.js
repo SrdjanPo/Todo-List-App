@@ -4,11 +4,11 @@ let uid = "";
 (function () {
   let firebase = app_firebase;
   //let uid = null;
-  console.log(firebase);
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       //User is signed in
       uid = user.uid;
+      console.log("set id");
     } else {
       //Redirect to login page
       uid = null;

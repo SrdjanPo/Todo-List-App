@@ -1,5 +1,4 @@
 //Category Clicked
-
 let categoryClicked = "";
 
 //firebase ref
@@ -41,6 +40,10 @@ window.onclick = function (event) {
   }
 };
 
+function goBack() {
+  window.history.back();
+}
+
 createBoardModalBtn.onclick = function (event) {
   event.preventDefault();
   createCategory();
@@ -49,44 +52,51 @@ createBoardModalBtn.onclick = function (event) {
 };
 
 function createCategory() {
-  const newCategory = document.createElement("div");
-  newCategory.classList.add("category-box");
   if (modalInputValue.value.length > 0) {
-    newCategory.innerText = modalInputValue.value;
-    categoryContainer.prepend(newCategory);
-    let firebase = app_firebase;
-    firebase
-      .database()
-      .ref("User/" + uid)
-      .push({
-        category: modalInputValue.value,
-      });
+    firebase.database().ref(`User/${uid}`).push({
+      category: modalInputValue.value,
+    });
+    let newBoardID = firebase.database().ref(`User/${uid}`).push().key;
+    createBoard(modalInputValue.value, newBoardID);
   } else {
     console.log("Input is empty");
   }
 }
 
+function createBoard(boardText, boardID) {
+  const newCategory = document.createElement("div");
+  newCategory.classList.add("category-box");
+  newCategory.innerText = boardText;
+  const deleteCategory = document.createElement("span");
+  deleteCategory.innerText = "X";
+  deleteCategory.classList.add("delete-category-btn");
+  deleteCategory.onclick = (e) => {
+    e.stopPropagation();
+    firebase.database().ref(`User/${uid}/${boardID}`).remove();
+    newCategory.remove();
+  };
+  newCategory.appendChild(deleteCategory);
+  categoryContainer.prepend(newCategory);
+  newCategory.onclick = function () {
+    categoryClicked = boardText;
+    window.location.replace(
+      "authSuccessful.html" +
+        "?pushID=" +
+        boardID +
+        "&category=" +
+        categoryClicked
+    );
+  };
+}
+
 const snapshotHandler = (snapshot) => {
+  //console.log(snapshot.val());
   snapshot.forEach(function (childNodes) {
+    //console.log(childNodes.val());
     childNodes.forEach(function (pushID) {
+      //console.log(pushID.val());
       pushID.forEach(function (category) {
-        const newCategory = document.createElement("div");
-        newCategory.classList.add("category-box");
-        newCategory.innerText = category.val();
-        const deleteCategory = document.createElement("span");
-        deleteCategory.innerText = "X";
-        deleteCategory.classList.add("delete-category-btn");
-        deleteCategory.onclick = function () {
-          console.log(firebase.database().ref("User/" + uid + "/" + pushID));
-        };
-        newCategory.appendChild(deleteCategory);
-        categoryContainer.prepend(newCategory);
-        newCategory.onclick = function () {
-          categoryClicked = category.val();
-          window.location.replace(
-            "authSuccessful.html" + "?category=" + categoryClicked
-          );
-        };
+        createBoard(category.val(), pushID.key);
       });
     });
   });
@@ -95,13 +105,7 @@ const snapshotHandler = (snapshot) => {
 (function () {
   const newCategory = document.createElement("div");
   newCategory.classList.add("category-box");
-  //let firebase = app_firebase;
-  firebase
-    .database()
-    .ref("User/" + uid)
-    .once("value", snapshotHandler);
-  firebase
-    .database()
-    .ref("User/" + uid)
-    .on("child_added", snapshotHandler);
+  firebase.database().ref(`User/${uid}`).once("value", snapshotHandler);
+  console.log(uid + "read id");
+  firebase.database().ref(`User/${uid}`).on("child_added", snapshotHandler);
 })();

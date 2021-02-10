@@ -11,6 +11,66 @@ body {
   min-height: 100vh;
 }
 
+header {
+  font-size: 1.5rem;
+}
+
+#logoutBtn {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  border-style: solid;
+  cursor: pointer;
+}
+
+#logoutBtn:hover {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  background-color: white;
+  color: #d88771;
+  border-color: #d88771;
+  border-style: solid;
+  cursor: pointer;
+}
+
+#backBtn {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  border-style: solid;
+  cursor: pointer;
+}
+
+#backBtn:hover {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  background-color: white;
+  color: #d88771;
+  border-color: #d88771;
+  border-style: solid;
+  cursor: pointer;
+}
+
+header,
+form {
+  min-height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .category-container {
   margin: 10%;
   display: flex;
