@@ -1,6 +1,8 @@
 let mainApp = {};
 let uid = "";
 
+const userAuthedEvent = new Event("userAuthed");
+
 (function () {
   let firebase = app_firebase;
   //let uid = null;
@@ -8,7 +10,7 @@ let uid = "";
     if (user) {
       //User is signed in
       uid = user.uid;
-      console.log("set id");
+      document.dispatchEvent(userAuthedEvent);
     } else {
       //Redirect to login page
       uid = null;

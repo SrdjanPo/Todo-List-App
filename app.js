@@ -14,35 +14,6 @@ const init = function (e) {
   passedPushID = pushParam;
   let categoryParam = url.searchParams.get("category");
   headerTitle.innerHTML = decodeURI(categoryParam);
-
-  // const todosSnapshotHandler = (snapshotTodo) => {
-  //   console.log(snapshotTodo.value);
-  //   // snapshotTodo.forEach(function (childNodes) {
-  //   //   console.log(childNodes);
-  //   //   childNodes.forEach(function (pushID) {
-  //   //     console.log(pushID.key());
-  //   //      pushID.forEach(function (category) {
-  //   //        createBoard(category.val(), pushID.key);
-  //   //      });
-  //   //   });
-  //   // });
-  // };
-
-  // document.onload = function () {
-  //   const newTodoItem = document.createElement("div");
-  //   newTodoItem.classList.add("todo");
-  //   //let firebase = app_firebase;
-  //   firebase
-  //     .database()
-  //     .ref(`User/${uid}/${passedPushID}/todos`)
-  //     .once("value", todosSnapshotHandler);
-  //   console.log(uid + "IDDDD");
-  //   firebase
-  //     .database()
-  //     .ref(`User/${uid}/${passedPushID}/todos`)
-  //     .on("child_added", todosSnapshotHandler);
-  //   console.log(uid + "IDDDD");
-  // };
 };
 
 //Event Listeners
@@ -61,39 +32,59 @@ function goBack() {
 function addTodo(event) {
   //Prevent form from submiting
   event.preventDefault();
-  //Todo DIV
-  const todoDiv = document.createElement("div");
-  todoDiv.classList.add("todo");
-  //Create LI
-  const newTodo = document.createElement("li");
   //CHECK IF INPUT IS EMPTY
   if (todoInput.value.length > 0) {
-    newTodo.innerText = todoInput.value;
-    newTodo.classList.add("todo-item");
-    todoDiv.appendChild(newTodo);
-    //CHECKMARK BUTTON
-    const completedButton = document.createElement("button");
-    completedButton.innerHTML = '<i class="fas fa-check"></li>';
-    completedButton.classList.add("completed-btn");
-    todoDiv.appendChild(completedButton);
-    //TRASH BUTTON
-    const trashButton = document.createElement("button");
-    trashButton.innerHTML = '<i class="fas fa-trash"></li>';
-    trashButton.classList.add("trash-btn");
-    todoDiv.appendChild(trashButton);
-    todoList.appendChild(todoDiv);
-    let temp = todoInput.value;
     firebase.database().ref(`User/${uid}/${passedPushID}`).child("todos").push({
       item: todoInput.value,
       status: "uncompleted",
     });
-    console.log(uid);
     todoInput.value = "";
     todoInput.focus();
     todoInput.select();
     todoButton.disabled = true;
     todoButton.classList.remove("enabledButton");
     todoButton.classList.add("disabledButton");
+  }
+}
+
+function createTodoItem(todoItem, todoStatus, snapshotKey) {
+  const todoDiv = document.createElement("div");
+  todoDiv.classList.add("todo");
+  //Create LI
+  const newTodo = document.createElement("li");
+  //CHECK IF INPUT IS EMPTY
+  if (todoItem.length > 0) {
+    newTodo.innerText = todoItem;
+    newTodo.classList.add("todo-item");
+    todoDiv.appendChild(newTodo);
+    //CHECKMARK BUTTON
+    const completedButton = document.createElement("button");
+    completedButton.innerHTML = '<i class="fas fa-check"></li>';
+    completedButton.classList.add("completed-btn");
+    completedButton.onclick = (e) => {
+      firebase
+        .database()
+        .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}/status`)
+        .set("completed");
+    };
+    todoDiv.appendChild(completedButton);
+    //TRASH BUTTON
+    const trashButton = document.createElement("button");
+    trashButton.innerHTML = '<i class="fas fa-trash"></li>';
+    trashButton.classList.add("trash-btn");
+    trashButton.onclick = (e) => {
+      //e.stopPropagation();
+      firebase
+        .database()
+        .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}`)
+        .remove();
+      //newCategory.remove();
+    };
+    todoDiv.appendChild(trashButton);
+    todoList.appendChild(todoDiv);
+    if (todoStatus == "completed") {
+      todoDiv.classList.add("completed");
+    }
   }
 }
 
@@ -153,34 +144,15 @@ function updateValue(e) {
 }
 
 const todosSnapshotHandler = (snapshot) => {
-  snapshot.forEach(function (childNodes) {
-    console.log(childNodes);
-    console.log(uid + "read ID");
-    // childNodes.forEach(function (pushID) {
-    //   console.log(pushID.key());
-    //   // pushID.forEach(function (category) {
-    //   //   createBoard(category.val(), pushID.key);
-    //   // });
-    // });
-  });
+  if (!(snapshot.key == "todos")) {
+    let item = snapshot.val().item;
+    let status = snapshot.val().status;
+    console.log(item + " : " + status);
+    createTodoItem(item, status, snapshot.key);
+  }
 };
 
-// (function () {
-//   const newTodoItem = document.createElement("div");
-//   newTodoItem.classList.add("todo");
-//   //let firebase = app_firebase;
-//   firebase
-//     .database()
-//     .ref(`User/${uid}/${passedPushID}/todos`)
-//     .once("value", todosSnapshotHandler);
-//   console.log(uid);
-//   firebase
-//     .database()
-//     .ref(`User/${uid}/${passedPushID}/todos`)
-//     .on("child_added", todosSnapshotHandler);
-// })();
-
-document.onload = function () {
+document.addEventListener("userAuthed", () => {
   const newTodoItem = document.createElement("div");
   newTodoItem.classList.add("todo");
   //let firebase = app_firebase;
@@ -188,9 +160,8 @@ document.onload = function () {
     .database()
     .ref(`User/${uid}/${passedPushID}/todos`)
     .once("value", todosSnapshotHandler);
-  console.log(uid);
   firebase
     .database()
     .ref(`User/${uid}/${passedPushID}/todos`)
     .on("child_added", todosSnapshotHandler);
-};
+});

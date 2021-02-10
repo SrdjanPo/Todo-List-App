@@ -57,7 +57,6 @@ function createCategory() {
       category: modalInputValue.value,
     });
     let newBoardID = firebase.database().ref(`User/${uid}`).push().key;
-    createBoard(modalInputValue.value, newBoardID);
   } else {
     console.log("Input is empty");
   }
@@ -89,23 +88,22 @@ function createBoard(boardText, boardID) {
   };
 }
 
-const snapshotHandler = (snapshot) => {
-  //console.log(snapshot.val());
-  snapshot.forEach(function (childNodes) {
-    //console.log(childNodes.val());
-    childNodes.forEach(function (pushID) {
-      //console.log(pushID.val());
-      pushID.forEach(function (category) {
-        createBoard(category.val(), pushID.key);
-      });
+const snapshotHandler = (categorySnapshot) => {
+
+  if (!(categorySnapshot.key == uid)) {
+    console.log(categorySnapshot.key);
+    categorySnapshot.forEach(function (childNodes) {
+      if (childNodes.key == "category") {
+        createBoard(childNodes.val(), categorySnapshot.key);
+      }
     });
-  });
+  } 
 };
 
-(function () {
+document.addEventListener("userAuthed", () => {
   const newCategory = document.createElement("div");
   newCategory.classList.add("category-box");
   firebase.database().ref(`User/${uid}`).once("value", snapshotHandler);
-  console.log(uid + "read id");
+  console.log(`User/${uid}/`);
   firebase.database().ref(`User/${uid}`).on("child_added", snapshotHandler);
-})();
+});
