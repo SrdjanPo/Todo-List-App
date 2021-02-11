@@ -44,19 +44,20 @@ function goBack() {
   window.history.back();
 }
 
-createBoardModalBtn.onclick = function (event) {
+//On click event in modal
+createBoardModalBtn.onclick = (event) => {
   event.preventDefault();
   createCategory();
   modalInputValue.value = "";
   modal.style.display = "none";
 };
 
+//
 function createCategory() {
   if (modalInputValue.value.length > 0) {
     firebase.database().ref(`User/${uid}`).push({
       category: modalInputValue.value,
     });
-    let newBoardID = firebase.database().ref(`User/${uid}`).push().key;
   } else {
     console.log("Input is empty");
   }
@@ -88,22 +89,19 @@ function createBoard(boardText, boardID) {
   };
 }
 
+//Firebase query handler
 const snapshotHandler = (categorySnapshot) => {
-
   if (!(categorySnapshot.key == uid)) {
-    console.log(categorySnapshot.key);
     categorySnapshot.forEach(function (childNodes) {
       if (childNodes.key == "category") {
         createBoard(childNodes.val(), categorySnapshot.key);
       }
     });
-  } 
+  }
 };
 
+//Firebase events for initial UI elements and for every child added
 document.addEventListener("userAuthed", () => {
-  const newCategory = document.createElement("div");
-  newCategory.classList.add("category-box");
   firebase.database().ref(`User/${uid}`).once("value", snapshotHandler);
-  console.log(`User/${uid}/`);
   firebase.database().ref(`User/${uid}`).on("child_added", snapshotHandler);
 });

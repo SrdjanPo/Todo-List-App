@@ -7,8 +7,7 @@ const headerTitle = document.querySelector("#header-title");
 let passedPushID;
 
 //header title
-const init = function (e) {
-  console.log(window.location.href);
+const init = (e) => {
   let url = new URL(window.location.href);
   let pushParam = url.searchParams.get("pushID");
   passedPushID = pushParam;
@@ -62,10 +61,18 @@ function createTodoItem(todoItem, todoStatus, snapshotKey) {
     completedButton.innerHTML = '<i class="fas fa-check"></li>';
     completedButton.classList.add("completed-btn");
     completedButton.onclick = (e) => {
-      firebase
-        .database()
-        .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}/status`)
-        .set("completed");
+      console.log(todoStatus);
+      if (todoStatus == "uncompleted") {
+        firebase
+          .database()
+          .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}/status`)
+          .set("completed");
+      } else {
+        firebase
+          .database()
+          .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}/status`)
+          .set("uncompleted");
+      }
     };
     todoDiv.appendChild(completedButton);
     //TRASH BUTTON
@@ -73,12 +80,10 @@ function createTodoItem(todoItem, todoStatus, snapshotKey) {
     trashButton.innerHTML = '<i class="fas fa-trash"></li>';
     trashButton.classList.add("trash-btn");
     trashButton.onclick = (e) => {
-      //e.stopPropagation();
       firebase
         .database()
         .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}`)
         .remove();
-      //newCategory.remove();
     };
     todoDiv.appendChild(trashButton);
     todoList.appendChild(todoDiv);
@@ -143,19 +148,17 @@ function updateValue(e) {
   }
 }
 
+//Firebase query handler
 const todosSnapshotHandler = (snapshot) => {
   if (!(snapshot.key == "todos")) {
     let item = snapshot.val().item;
     let status = snapshot.val().status;
-    console.log(item + " : " + status);
     createTodoItem(item, status, snapshot.key);
   }
 };
 
+//Firebase events for initial UI elements and for every child added
 document.addEventListener("userAuthed", () => {
-  const newTodoItem = document.createElement("div");
-  newTodoItem.classList.add("todo");
-  //let firebase = app_firebase;
   firebase
     .database()
     .ref(`User/${uid}/${passedPushID}/todos`)
