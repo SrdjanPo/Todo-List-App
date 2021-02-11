@@ -1,4 +1,8 @@
-//Selectors
+const Enum = Object.freeze({
+  COMPLETED: "completed",
+  UNCOMPLETED: "uncompleted",
+});
+
 const todoInput = document.querySelector(".todo-input");
 const todoButton = document.querySelector(".todo-button");
 const todoList = document.querySelector(".todo-list");
@@ -6,7 +10,7 @@ const filterOption = document.querySelector(".filter-todo");
 const headerTitle = document.querySelector("#header-title");
 let passedPushID;
 
-//header title
+//Header title
 const init = (e) => {
   let url = new URL(window.location.href);
   let pushParam = url.searchParams.get("pushID");
@@ -15,27 +19,23 @@ const init = (e) => {
   headerTitle.innerHTML = decodeURI(categoryParam);
 };
 
-//Event Listeners
 todoInput.addEventListener("input", updateValue);
 todoButton.addEventListener("click", addTodo);
 todoList.addEventListener("click", deleteCheck);
 filterOption.addEventListener("change", filterTodo);
 document.addEventListener("DOMContentLoaded", init);
 
-//Functions
-
 function goBack() {
   window.location.replace("category.html");
 }
 
 function addTodo(event) {
-  //Prevent form from submiting
   event.preventDefault();
   //CHECK IF INPUT IS EMPTY
   if (todoInput.value.length > 0) {
     firebase.database().ref(`User/${uid}/${passedPushID}`).child("todos").push({
       item: todoInput.value,
-      status: "uncompleted",
+      status: Enum.UNCOMPLETED,
     });
     todoInput.value = "";
     todoInput.focus();
@@ -44,6 +44,13 @@ function addTodo(event) {
     todoButton.classList.remove("enabledButton");
     todoButton.classList.add("disabledButton");
   }
+}
+
+function setFirebaseTodoStatus(snapshotKeyTodoStatus, enumValue) {
+  firebase
+    .database()
+    .ref(`User/${uid}/${passedPushID}/todos/${snapshotKeyTodoStatus}/status`)
+    .set(enumValue);
 }
 
 function createTodoItem(todoItem, todoStatus, snapshotKey) {
@@ -61,17 +68,10 @@ function createTodoItem(todoItem, todoStatus, snapshotKey) {
     completedButton.innerHTML = '<i class="fas fa-check"></li>';
     completedButton.classList.add("completed-btn");
     completedButton.onclick = (e) => {
-      console.log(todoStatus);
-      if (todoStatus == "uncompleted") {
-        firebase
-          .database()
-          .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}/status`)
-          .set("completed");
+      if (todoStatus === Enum.UNCOMPLETED) {
+        setFirebaseTodoStatus(snapshotKey, Enum.COMPLETED);
       } else {
-        firebase
-          .database()
-          .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}/status`)
-          .set("uncompleted");
+        setFirebaseTodoStatus(snapshotKey, Enum.UNCOMPLETED);
       }
     };
     todoDiv.appendChild(completedButton);
@@ -80,17 +80,21 @@ function createTodoItem(todoItem, todoStatus, snapshotKey) {
     trashButton.innerHTML = '<i class="fas fa-trash"></li>';
     trashButton.classList.add("trash-btn");
     trashButton.onclick = (e) => {
-      firebase
-        .database()
-        .ref(`User/${uid}/${passedPushID}/todos/${snapshotKey}`)
-        .remove();
+      removeFirebaseTodo(snapshotKey);
     };
     todoDiv.appendChild(trashButton);
     todoList.appendChild(todoDiv);
-    if (todoStatus == "completed") {
-      todoDiv.classList.add("completed");
+    if (todoStatus === Enum.COMPLETED) {
+      todoDiv.classList.add(Enum.COMPLETED);
     }
   }
+}
+
+function removeFirebaseTodo(firebaseSnapshotKey) {
+  firebase
+    .database()
+    .ref(`User/${uid}/${passedPushID}/todos/${firebaseSnapshotKey}`)
+    .remove();
 }
 
 function deleteCheck(e) {
@@ -106,7 +110,7 @@ function deleteCheck(e) {
 
   if (item.classList.contains("completed-btn")) {
     const todo = item.parentElement;
-    todo.classList.toggle("completed");
+    todo.classList.toggle(Enum.COMPLETED);
   }
 }
 
@@ -114,15 +118,15 @@ function filterTodo(e) {
   const todos = todoList.childNodes;
   todos.forEach(function (todo) {
     switch (e.target.value) {
-      case "completed":
-        if (todo.classList.contains("completed")) {
+      case Enum.COMPLETED:
+        if (todo.classList.contains(Enum.COMPLETED)) {
           todo.style.display = "flex";
         } else {
           todo.style.display = "none";
         }
         break;
-      case "uncompleted":
-        if (!todo.classList.contains("completed")) {
+      case Enum.UNCOMPLETED:
+        if (!todo.classList.contains(Enum.COMPLETED)) {
           todo.style.display = "flex";
         } else {
           todo.style.display = "none";
